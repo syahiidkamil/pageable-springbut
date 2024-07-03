@@ -3,10 +3,12 @@ package sekolah.lms.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import sekolah.lms.model.Student;
 import sekolah.lms.repository.StudentRepository;
 import sekolah.lms.service.StudentService;
+import sekolah.lms.utils.specification.StudentSpecification;
 
 import java.util.List;
 
@@ -16,19 +18,21 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     @Override
     public Student create(Student request) {
-        String prefixNim = request.getName() + request.getBirthDate();
+        String prefixNim = request.getName() + request.getBirthDate().getTime();
         request.setNim(prefixNim);
         return studentRepository.save(request);
     }
 
     @Override
-    public Page<Student> getAll(Pageable pageable) {
-        return studentRepository.findAll(pageable);
+    public Page<Student> getAll(Pageable pageable, String name) {
+        Specification<Student> spec = StudentSpecification.getSpecification(name);
+        return studentRepository.findAll(spec, pageable);
     }
 
     @Override
     public Student getOne(Integer id) {
-        return studentRepository.findById(id).orElse(null);
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("student with id: " + id + " not found"));
     }
 
     @Override

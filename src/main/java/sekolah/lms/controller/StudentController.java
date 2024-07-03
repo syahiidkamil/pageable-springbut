@@ -27,16 +27,30 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<?> getAll(
-            @PageableDefault(size=10)Pageable pageable
+            @PageableDefault(size=10)Pageable pageable,
+            @RequestParam(required = false) String name
             ) {
-        Page<Student> res = studentService.getAll(pageable);
-        PageResponseWrapper<Student> result = new PageResponseWrapper<>(res);
         return Res.renderJson(
-                result,
+                new PageResponseWrapper<>(studentService.getAll(pageable, name)),
                 "KETEMU",
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOne(@PathVariable Integer id) {
+        return Res.renderJson(
+                studentService.getOne(id),
+                "found",
+                HttpStatus.OK
+        );
+    }
+
+    // Validation
+    // Specification -> getByName
+    // JWT security
+    // REST TEMPLATE -> backend konsumsi API dari luar
+    // Docker ->
 
     //web response -> pagination
 }
