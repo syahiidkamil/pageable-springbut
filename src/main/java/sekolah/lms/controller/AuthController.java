@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import sekolah.lms.model.Role;
 import sekolah.lms.model.User;
 import sekolah.lms.repository.UserRepository;
 import sekolah.lms.security.JwtTokenProvider;
@@ -40,6 +41,12 @@ public class AuthController {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Default to ROLE_STUDENT if no role is provided
+        if (user.getRole() == null) {
+            user.setRole(Role.ROLE_STUDENT);
+        }
+
         User result = userRepository.save(user);
 
         return ResponseEntity.ok("User registered successfully");
