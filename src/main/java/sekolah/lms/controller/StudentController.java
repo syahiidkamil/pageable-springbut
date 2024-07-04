@@ -37,6 +37,10 @@ public class StudentController {
         );
     }
 
+    // car rent,
+    // car, brand, users -> specfication, by name
+    // car -> by name + by available
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Integer id) {
         return Res.renderJson(
